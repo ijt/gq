@@ -14,10 +14,12 @@ Installing
 Example
 -------
 ```
-gq -ep=https://countries.trevorblades.com/ -q='
+go run main.go -ep=https://rickandmortyapi.com/graphql -q='
   query {
-    countries {
-      name
+    characters(page: 0){
+      results {
+        name
+      }
     }
   }
 '
