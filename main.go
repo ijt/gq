@@ -45,7 +45,7 @@ func gq(q, ep string) error {
 	if err != nil {
 		return errors.Wrap(err, "reading response from GraphQL server")
 	}
-	bs2, err := prettify(bs)
+	bs2, err := prettifyJSON(bs)
 	if err != nil {
 		return errors.Wrapf(err, "want JSON response from GraphQL server, got '%s'", bs)
 	}
@@ -55,7 +55,7 @@ func gq(q, ep string) error {
 	return nil
 }
 
-func prettify(bs []byte) ([]byte, error) {
+func prettifyJSON(bs []byte) ([]byte, error) {
 	var buf bytes.Buffer
 	err := json.Indent(&buf, bs, "", "  ")
 	if err != nil {
