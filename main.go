@@ -47,7 +47,7 @@ func gq(q, ep string) error {
 	}
 	bs2, err := prettify(bs)
 	if err != nil {
-		return errors.Wrap(err, "prettifying JSON response from GraphQL server")
+		return errors.Wrapf(err, "want JSON response from GraphQL server, got '%s'", bs)
 	}
 	if _, err := os.Stdout.Write(bs2); err != nil {
 		return errors.Wrap(err, "outputting JSON response")
