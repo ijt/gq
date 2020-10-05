@@ -14,7 +14,7 @@ Installing
 Example
 -------
 ```
-go run main.go -ep=https://rickandmortyapi.com/graphql -q='
+gq -ep=https://rickandmortyapi.com/graphql -q='
   query {
     characters(page: 0){
       results {
