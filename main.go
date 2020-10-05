@@ -8,7 +8,6 @@ import (
 	"log"
 	"net/http"
 	"os"
-	"strings"
 
 	"github.com/pkg/errors"
 )
@@ -28,8 +27,16 @@ func main() {
 	}
 }
 
+// gq runs query q on endpoint ep and outputs the result.
 func gq(q, ep string) error {
-	resp, err := http.Post(ep, "application/graphql", strings.NewReader(q))
+	type JSONQuery struct {
+		Query string `json:"query"`
+	}
+	jq, err := json.Marshal(&JSONQuery{Query: q})
+	if err != nil {
+		return errors.Wrap(err, "marshalling query into JSON")
+	}
+	resp, err := http.Post(ep, "application/json", bytes.NewReader(jq))
 	if err != nil {
 		return errors.Wrap(err, "POSTing GraphQL query")
 	}
