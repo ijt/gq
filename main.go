@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
+	"encoding/json"
 	"flag"
-	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"os"
@@ -32,11 +34,25 @@ func gq(q, ep string) error {
 		return errors.Wrap(err, "POSTing GraphQL query")
 	}
 	defer resp.Body.Close()
+	bs, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
 		return errors.Wrap(err, "reading response from GraphQL server")
 	}
-	if _, err := io.Copy(os.Stdout, resp.Body); err != nil {
-		return errors.Wrap(err, "outputting response")
+	bs2, err := prettify(bs)
+	if err != nil {
+		return errors.Wrap(err, "prettifying JSON response from GraphQL server")
+	}
+	if _, err := os.Stdout.Write(bs2); err != nil {
+		return errors.Wrap(err, "outputting JSON response")
 	}
 	return nil
+}
+
+func prettify(bs []byte) ([]byte, error) {
+	var buf bytes.Buffer
+	err := json.Indent(&buf, bs, "", "  ")
+	if err != nil {
+		return nil, errors.Wrap(err, "indenting JSON")
+	}
+	return buf.Bytes(), nil
 }
